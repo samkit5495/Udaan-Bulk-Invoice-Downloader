@@ -1,11 +1,15 @@
 import axios from "axios";
 import fs from "fs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const baseUrl = "https://api.udaan.com";
 
 const invoiceUrl = "/api/pharma/csv/v1/invoice/";
 
-const [, , startDate, endDate, token] = process.argv;
+const token = process.env.ACCESS_TOKEN;
+const [, , startDate, endDate] = process.argv;
 
 console.log(`Downloading invoices from ${startDate} to ${endDate}`);
 

@@ -9,6 +9,14 @@ const baseUrl = "https://api.udaan.com";
 const invoiceUrl = "/api/pharma/csv/v1/invoice/";
 
 const token = process.env.ACCESS_TOKEN;
+
+if (process.argv.length != 4) {
+  console.error(`This file expects start and end date in args
+  node index.js <start_date> <end_date>
+  e.g. node index.js 2024-03-31 2023-08-01`);
+  process.exit(0);
+}
+
 const [, , startDate, endDate] = process.argv;
 
 console.log(`Downloading invoices from ${startDate} to ${endDate}`);
@@ -26,7 +34,7 @@ do {
       nextOrder
         ? `${baseUrl}/api/order/v1/list?count=5&older-than=${nextOrder.createdAt}&&skip-order-ids=${nextOrder.sellerOrderId}&user-order-type=ALL&filter=ALL`
         : `${baseUrl}/api/order/v1/list?count=5&older-than=${new Date(
-            startDate
+            endDate
           ).getTime()}&user-order-type=ALL&filter=ALL`,
       {
         headers,
@@ -34,7 +42,7 @@ do {
     );
     if (
       data.length === 0 ||
-      new Date(nextOrder?.createdAt) <= new Date(endDate)
+      new Date(nextOrder?.createdAt) <= new Date(startDate)
     ) {
       break;
     }
